@@ -1,0 +1,158 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0746107431e01f54faed63c32e49714b, type: 3}
+  m_Name: Player Footstep
+  m_EditorClassIdentifier: 
+  volume:
+    min: 1
+    max: 1
+  pan:
+    min: 0
+    max: 0
+  pitch:
+    min: 1
+    max: 1
+  cooldownSettings:
+    enabled: 0
+    time: 0
+  outputGroup: {fileID: -3893314905816607252, guid: 97046b2873536a3429473aeb62b340ca,
+    type: 2}
+  spatialSettings:
+    randomPositionSettings:
+      type: 0
+      offset:
+        min: 0
+        max: 0
+    enabled: 1
+    maxDistance: 35
+    volumeCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: -3
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    spatialBlendCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 5
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 0.1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    stereoSpreadCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 0
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    reverbZoneMixCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  sounds:
+  - playTime: 0
+    loop: 0
+    chanceToPlay: 1
+    clips:
+    - {fileID: 8300000, guid: edbbf8df31983e2408c2c7e0b346056e, type: 3}
+    - {fileID: 8300000, guid: 07e297954c937954393cc0d5a5f5811c, type: 3}
+    - {fileID: 8300000, guid: cdc63c6903874b84ab215222a4ff4a96, type: 3}
+    - {fileID: 8300000, guid: 4635c1053d2e6b44f9c147bc5c4b426e, type: 3}
+    - {fileID: 8300000, guid: 5d947eca32188e84780d565eb058eb5f, type: 3}
+    - {fileID: 8300000, guid: 10da778a2afa1194fbf6fc8bc6c850c3, type: 3}
+    - {fileID: 8300000, guid: ea211154b71efae4093417586bcd67ea, type: 3}
+    - {fileID: 8300000, guid: 29cefe3d06590d54086a21fe74b3c0ee, type: 3}
+    - {fileID: 8300000, guid: 81d91784c5424174aa971f4f9e7b139f, type: 3}
+    - {fileID: 8300000, guid: 75b12116ec821874e92190511f56ab86, type: 3}
+    clipIndex: 6
+    lastPlayedIndex: 8
