@@ -158,8 +158,6 @@ namespace MordiAudio
 			UpdateAuditioningAudioSources();
 
 			listener = FindObjectOfType<AudioListener>();
-
-			InitializeContent();
 		}
 
 		void UpdateAuditioningAudioSources() {
@@ -171,7 +169,7 @@ namespace MordiAudio
 			AudioEvent audioEvent = (AudioEvent)target;
 			if (audioEvent.sounds != null) {
 				for (int i = 0; i < audioEvent.sounds.Count; i++) {
-					AudioSource source = EditorUtility.CreateGameObjectWithHideFlags("Audio preview", HideFlags.None, typeof(AudioSource)).GetComponent<AudioSource>();
+					AudioSource source = EditorUtility.CreateGameObjectWithHideFlags("Audio preview", HideFlags.HideAndDontSave, typeof(AudioSource)).GetComponent<AudioSource>();
 					auditioningAudioSources.Add(source);
 				}
 			}
@@ -179,7 +177,8 @@ namespace MordiAudio
 
 		void RemoveAllAuditioningAudioSources() {
 			for (int i = auditioningAudioSources.Count - 1; i >= 0; i--) {
-				DestroyImmediate(auditioningAudioSources[i].gameObject);
+				if (auditioningAudioSources[i] != null)
+					DestroyImmediate(auditioningAudioSources[i].gameObject);
 			}
 			auditioningAudioSources.Clear();
 		}
@@ -200,6 +199,7 @@ namespace MordiAudio
 
 		public override void OnInspectorGUI() {
 			InitializeStyles();
+			InitializeContent();
 
 			// Not sure what this does
 			serializedObject.Update();

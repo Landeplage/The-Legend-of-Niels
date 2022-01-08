@@ -92,8 +92,8 @@ public class PlayerController : MonoBehaviour
             rightAudio = true;
         }
         float rad = Mathf.Sin(walkAnim * Mathf.PI * 2f);
-        rightLeg.localPosition = rightLegInitialPos + Vector3.forward * rad * walkBlend;
-        leftLeg.localPosition = leftLegInitialPos + Vector3.forward * -rad * walkBlend;
+        rightLeg.localPosition = rightLegInitialPos + Vector3.forward * rad * walkBlend * 3f;
+        leftLeg.localPosition = leftLegInitialPos + Vector3.forward * -rad * walkBlend * 3f;
         if (move != Vector3.zero) {
             if (leftAudio && rad > 0.5f) {
                 footstepEvent.Play(transform.position);
