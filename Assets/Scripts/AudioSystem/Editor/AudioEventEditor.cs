@@ -5,6 +5,7 @@ using UnityEditor;
 
 namespace MordiAudio
 {
+	[System.Serializable]
 	[CanEditMultipleObjects]
 	[CustomEditor(typeof(AudioEvent), true)]
 	public class AudioEventEditor : Editor
@@ -143,14 +144,12 @@ namespace MordiAudio
         {
 			public enum FetchType
             {
-				basedOnEventName,
 				basedOnFirstClip,
 				basedOnSearch,
 				clearClips
             }
 
-			public AudioEvent audioEvent;
-			public AudioEvent.Sound clipCollection;
+			public SerializedProperty clipsProp;
 			public FetchType fetchType;
         }
 
@@ -201,19 +200,21 @@ namespace MordiAudio
 			InitializeStyles();
 			InitializeContent();
 
-			// Not sure what this does
 			serializedObject.Update();
 
-			AudioEvent audioEvent = (AudioEvent)target;
+			SerializedProperty soundsProp = serializedObject.FindProperty("sounds");
+			SerializedProperty spatialSettingsProp = serializedObject.FindProperty("spatialSettings");
+			SerializedProperty cooldownSettingsProp = serializedObject.FindProperty("cooldownSettings");
 
 			Space();
 
 			// Audition-buttons
 			GUILayout.BeginHorizontal();
 			GUILayout.BeginHorizontal();
-			GUI.enabled = AudioEventHasAnyClips(audioEvent);
+			GUI.enabled = AudioEventHasAnyClips(soundsProp);
 			if (GUILayout.Button(content.buttonPlay, styles.buttonPlaybackControl)) {
-				audioEvent.Audition(auditioningAudioSources, GetSpatialPannerWorldPosition(audioEvent.spatialSettings.maxDistance));
+				AudioEvent audioEvent = (AudioEvent)target;
+				audioEvent.Audition(auditioningAudioSources, GetSpatialPannerWorldPosition(spatialSettingsProp.FindPropertyRelative("maxDistance").floatValue));
 			}
 			GUI.enabled = AnyAuditionSourceIsPlaying();
 			if (GUILayout.Button(content.buttonStop, styles.buttonPlaybackControl)) {
@@ -244,10 +245,13 @@ namespace MordiAudio
 
 			// Cooldown
 			GUILayout.BeginHorizontal(EditorStyles.helpBox);
-			audioEvent.cooldownSettings.enabled = EditorGUILayout.ToggleLeft("Cooldown time", audioEvent.cooldownSettings.enabled);
 
-			if (audioEvent.cooldownSettings.enabled) {
-				audioEvent.cooldownSettings.time = EditorGUILayout.FloatField(audioEvent.cooldownSettings.time, GUILayout.Width(50f));
+			SerializedProperty cooldownSettingsEnabledProp = cooldownSettingsProp.FindPropertyRelative("enabled");
+			cooldownSettingsEnabledProp.boolValue = EditorGUILayout.ToggleLeft("Cooldown time", cooldownSettingsEnabledProp.boolValue);
+
+			if (cooldownSettingsEnabledProp.boolValue) {
+				SerializedProperty cooldownSettingsTimeProp = cooldownSettingsProp.FindPropertyRelative("time");
+				cooldownSettingsTimeProp.floatValue = EditorGUILayout.FloatField(cooldownSettingsTimeProp.floatValue, GUILayout.Width(50f));
 				GUILayout.Label("seconds", GUILayout.Width(50f));
 			}
 			
@@ -258,15 +262,16 @@ namespace MordiAudio
 			// 3D settings
 			GUILayout.BeginVertical(EditorStyles.helpBox);
 			GUILayout.BeginHorizontal();
-			audioEvent.spatialSettings.enabled = EditorGUILayout.ToggleLeft("3D spatialize", audioEvent.spatialSettings.enabled);
-			if (audioEvent.spatialSettings.enabled) {
+			SerializedProperty spatialSettingsEnabledProp = spatialSettingsProp.FindPropertyRelative("enabled");
+			spatialSettingsEnabledProp.boolValue = EditorGUILayout.ToggleLeft("3D spatialize", spatialSettingsEnabledProp.boolValue);
+			if (spatialSettingsEnabledProp.boolValue) {
 				GUILayout.FlexibleSpace();
 				EditorGUILayout.DropdownButton(new GUIContent() { text = "No preset" }, FocusType.Keyboard, GUILayout.Width(120f));
 			}
 			GUILayout.EndHorizontal();
 
-			if (audioEvent.spatialSettings.enabled) {
-				SpatializeGUI(audioEvent.spatialSettings, serializedObject.FindProperty("spatialSettings"));
+			if (spatialSettingsEnabledProp.boolValue) {
+				SpatializeGUI(serializedObject.FindProperty("spatialSettings"));
 			}
 
 			GUILayout.EndVertical();
@@ -275,36 +280,26 @@ namespace MordiAudio
 
 			// Clip collections
 			EditorGUILayout.LabelField("Sounds");
-			SerializedProperty soundsProp = serializedObject.FindProperty("sounds");
             for (int i = 0; i < soundsProp.arraySize; i++) {
-				AudioEvent.Sound sound = audioEvent.sounds[i];
-
 				GUILayout.BeginVertical(EditorStyles.helpBox);
 				SerializedProperty soundProp = soundsProp.GetArrayElementAtIndex(i);
 
 				GUILayout.BeginHorizontal();
 
 				if (GUILayout.Button("...", GUILayout.Width(25f))) {
+					SerializedProperty clipsProp = soundProp.FindPropertyRelative("clips");
 					GenericMenu menu = new GenericMenu();
 					menu.AddItem(new GUIContent("Search..."), false, OnClipCollectionDropdownButton, new ClipCollectionDropdownSelection() {
-						audioEvent = audioEvent,
-						clipCollection = audioEvent.sounds[i],
+						clipsProp = clipsProp,
 						fetchType = ClipCollectionDropdownSelection.FetchType.basedOnSearch
 					});
-					menu.AddItem(new GUIContent("Fetch based on event name"), false, OnClipCollectionDropdownButton, new ClipCollectionDropdownSelection() {
-						audioEvent = audioEvent,
-						clipCollection = audioEvent.sounds[i],
-						fetchType = ClipCollectionDropdownSelection.FetchType.basedOnEventName
-					});
 					menu.AddItem(new GUIContent("Fetch based on first clip"), false, OnClipCollectionDropdownButton, new ClipCollectionDropdownSelection() {
-						audioEvent = audioEvent,
-						clipCollection = audioEvent.sounds[i],
+						clipsProp = clipsProp,
 						fetchType = ClipCollectionDropdownSelection.FetchType.basedOnFirstClip
 					});
 					menu.AddSeparator("");
 					menu.AddItem(new GUIContent("Clear clips"), false, OnClipCollectionDropdownButton, new ClipCollectionDropdownSelection() {
-						audioEvent = audioEvent,
-						clipCollection = audioEvent.sounds[i],
+						clipsProp = clipsProp,
 						fetchType = ClipCollectionDropdownSelection.FetchType.clearClips
 					});
 					menu.ShowAsContext();
@@ -313,8 +308,8 @@ namespace MordiAudio
 				/*EditorGUILayout.LabelField("Play", GUILayout.Width(30f));
 				clipCollection.playTime = (AudioEvent.ClipCollection.PlayTime)EditorGUILayout.EnumPopup(clipCollection.playTime, GUILayout.Width(75f));*/
 				EditorGUILayout.LabelField("Loop", GUILayout.Width(30f));
-				sound.loop = EditorGUILayout.Toggle(sound.loop);
-				//sound.chanceToPlay = EditorGUILayout.FloatField("Chance to play", sound.chanceToPlay);
+				SerializedProperty soundLoopProp = soundProp.FindPropertyRelative("loop");
+				soundLoopProp.boolValue = EditorGUILayout.Toggle(soundLoopProp.boolValue);
 
 				SerializedProperty chanceToPlayProp = soundProp.FindPropertyRelative("chanceToPlay");
 				chanceToPlayProp.floatValue = Mathf.Clamp01(EditorGUILayout.IntField("Chance", Mathf.RoundToInt(chanceToPlayProp.floatValue * 100)) / 100f);
@@ -341,7 +336,7 @@ namespace MordiAudio
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button("+", GUILayout.Width(25f), GUILayout.Height(25f))) {
-				audioEvent.sounds.Add(new AudioEvent.Sound());
+				soundsProp.InsertArrayElementAtIndex(soundsProp.arraySize);
 				UpdateAuditioningAudioSources();
 			}
 			GUILayout.FlexibleSpace();
@@ -356,7 +351,7 @@ namespace MordiAudio
 
 			// Delete any clip collection queued for deletion
 			if (clipCollectionQueuedForDeletionIndex > -1) {
-				audioEvent.sounds.RemoveAt(clipCollectionQueuedForDeletionIndex);
+				soundsProp.DeleteArrayElementAtIndex(clipCollectionQueuedForDeletionIndex);
 				clipCollectionQueuedForDeletionIndex = -1;
 				UpdateAuditioningAudioSources();
             }
@@ -367,7 +362,7 @@ namespace MordiAudio
 
 		#region Inspector GUI methods
 
-		void SpatializeGUI(AudioEvent.SpatialSettings settings, SerializedProperty spatialSettingsProp) {
+		void SpatializeGUI(SerializedProperty spatialSettingsProp) {
 			GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(80f));
 
 			if (Event.current.type == EventType.Repaint) {
@@ -382,18 +377,18 @@ namespace MordiAudio
 
 				// Add timeline labels
 				GUI.contentColor = styles.colCurveTimelineLabel;
-				CurveGraphLabelsGUI(rect, settings.maxDistance);
+				CurveGraphLabelsGUI(rect, spatialSettingsProp.FindPropertyRelative("maxDistance").floatValue);
 				GUI.contentColor = Color.white;
 
 				BeginDraw(rect);
 
 				DrawSpatialCurveGraphBackground(rect);
 
-				DrawSpatialCurve(rect, styles.colCurveVolume, settings.volumeCurve, 0);
-				DrawSpatialCurve(rect, styles.colCurveSpatialBlend, settings.spatialBlendCurve, 1);
-				DrawSpatialCurve(rect, styles.colCurveSpread, settings.stereoSpreadCurve, 2);
-				DrawSpatialCurve(rect, styles.colCurveReverbZoneMix, settings.reverbZoneMixCurve, 3);
-				DrawListenerIndicator(rect, settings.maxDistance);
+				DrawSpatialCurve(rect, styles.colCurveVolume, spatialSettingsProp.FindPropertyRelative("volumeCurve").animationCurveValue, 0);
+				DrawSpatialCurve(rect, styles.colCurveSpatialBlend, spatialSettingsProp.FindPropertyRelative("spatialBlendCurve").animationCurveValue, 1);
+				DrawSpatialCurve(rect, styles.colCurveSpread, spatialSettingsProp.FindPropertyRelative("stereoSpreadCurve").animationCurveValue, 2);
+				DrawSpatialCurve(rect, styles.colCurveReverbZoneMix, spatialSettingsProp.FindPropertyRelative("reverbZoneMixCurve").animationCurveValue, 3);
+				DrawListenerIndicator(rect, spatialSettingsProp.FindPropertyRelative("maxDistance").floatValue);
 
 				EndDraw();
 			}
@@ -423,7 +418,7 @@ namespace MordiAudio
 
 			// Spatial panner
 			if (Screen.width > 375) {
-				SpatialPannerGUI(settings);
+				SpatialPannerGUI();
 			}
 			
 			GUILayout.EndHorizontal();
@@ -438,12 +433,11 @@ namespace MordiAudio
 			if (typeProp.enumValueIndex != (int)AudioEvent.SpatialSettings.RandomPositionSettings.Type.off) {
 				GUILayout.BeginHorizontal();
 				RandomizedFloatGUI(prop.FindPropertyRelative("offset"), 0f, 0f, 100f);
-				//EditorGUILayout.MinMaxSlider(ref settings.minOffset, ref settings.maxOffset, 0f, 50f);
 				GUILayout.EndHorizontal();
 			}
 		}
 
-		void SpatialPannerGUI(AudioEvent.SpatialSettings settings) {
+		void SpatialPannerGUI() {
 			Color back = GUI.backgroundColor;
 			GUI.backgroundColor = new Color(1f, 1f, 1f, 0f);
 			GUILayout.Box(content.texPannerBack, styles.boxSpatialPanner);
@@ -758,34 +752,32 @@ namespace MordiAudio
         void OnClipCollectionDropdownButton(object clipCollectionDropdownSelection) {
 			ClipCollectionDropdownSelection selection = (ClipCollectionDropdownSelection)clipCollectionDropdownSelection;
             switch (selection.fetchType) {
-                case ClipCollectionDropdownSelection.FetchType.basedOnEventName:
-					FetchClips(selection.clipCollection, target.name);
-					break;
                 case ClipCollectionDropdownSelection.FetchType.basedOnFirstClip:
-					FetchClipsBasedOnFirstClip(selection.clipCollection);
+					FetchClipsBasedOnFirstClip(selection.clipsProp);
 					break;
                 case ClipCollectionDropdownSelection.FetchType.basedOnSearch:
-					AudioClipSearchWindow.Open((AudioEvent)target, selection.clipCollection);
+					AudioClipSearchWindow.Open((AudioEvent)target, selection.clipsProp);
                     break;
 				case ClipCollectionDropdownSelection.FetchType.clearClips:
-					selection.clipCollection.clips.Clear();
+					selection.clipsProp.ClearArray();
+					serializedObject.ApplyModifiedProperties();
 					break;
                 default:
                     break;
             }
 		}
 
-		void FetchClipsBasedOnFirstClip(AudioEvent.Sound clipCollection) {
-			if (clipCollection.clips == null)
+		void FetchClipsBasedOnFirstClip(SerializedProperty clipsProp) {
+			if (clipsProp == null)
 				return;
 
-			if (clipCollection.clips.Count == 0)
+			if (clipsProp.arraySize == 0)
 				return;
 
-			if (clipCollection.clips[0] == null)
+			if (clipsProp.GetArrayElementAtIndex(0) == null)
 				return;
 
-			string clipName = clipCollection.clips[0].name;
+			string clipName = (clipsProp.GetArrayElementAtIndex(0).objectReferenceValue as AudioClip).name;
 			for (int i = 0; i < 10; i++) {
 				// Remove numbers from end of name
 				if (LastCharacterInStringIsNumber(clipName)) {
@@ -794,10 +786,10 @@ namespace MordiAudio
 				clipName = clipName.Trim(); // Trim whitespace
 			}
 
-			FetchClips(clipCollection, clipName);
+			FetchClips(clipsProp, clipName);
 		}
 
-		void FetchClips(AudioEvent.Sound clipCollection, string search) {
+		void FetchClips(SerializedProperty clipsProp, string search) {
 			string[] assetGUIDs = AssetDatabase.FindAssets($"t:AudioClip {search}");
 
 			if (assetGUIDs.Length == 0) {
@@ -806,16 +798,19 @@ namespace MordiAudio
 			}
 
 			// Clear clip-list in AudioEvent
-			if (clipCollection.clips != null)
-				clipCollection.clips.Clear();
-			else
-				clipCollection.clips = new List<AudioClip>();
+			if (clipsProp != null)
+				clipsProp.ClearArray();
 
 			for (int i = 0; i < assetGUIDs.Length; i++) {
 				string path = AssetDatabase.GUIDToAssetPath(assetGUIDs[i]);
 
 				// Add clip to clips-list
-				clipCollection.clips.Add(AssetDatabase.LoadAssetAtPath<AudioClip>(path));
+				AudioClip clip = AssetDatabase.LoadAssetAtPath<AudioClip>(path);
+				Debug.Log("Inserting " + clip.name);
+				clipsProp.InsertArrayElementAtIndex(i);
+				clipsProp.GetArrayElementAtIndex(i).objectReferenceValue = clip;
+				Debug.Log(clipsProp.GetArrayElementAtIndex(i).objectReferenceValue);
+				//clipCollection.clips.Add();
             }
         }
 
@@ -830,14 +825,14 @@ namespace MordiAudio
 			return int.TryParse(lastChar, out _);
 		}
 
-		bool AudioEventHasAnyClips(AudioEvent audioEvent) {
-			if (audioEvent.sounds == null)
+		bool AudioEventHasAnyClips(SerializedProperty soundsProp) {
+			if (soundsProp == null)
 				return false;
-            for (int i = 0; i < audioEvent.sounds.Count; i++) {
-				if (audioEvent.sounds[i].clips != null) {
-					if (audioEvent.sounds[i].clips.Count > 0)
-						return true;
-                }
+            for (int i = 0; i < soundsProp.arraySize; i++) {
+				SerializedProperty soundProp = soundsProp.GetArrayElementAtIndex(i);
+				SerializedProperty clipsProp = soundProp.FindPropertyRelative("clips");
+				if (clipsProp.arraySize > 0)
+					return true;
             }
 			return false;
         }

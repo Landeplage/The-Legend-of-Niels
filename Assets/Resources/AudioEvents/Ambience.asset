@@ -139,10 +139,11 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  clipCollections:
+  sounds:
   - playTime: 0
     loop: 0
+    chanceToPlay: 1
     clips:
     - {fileID: 8300000, guid: bba2c193c96a2d64cb6ecb9abf247e52, type: 3}
-    clipIndex: 5
+    clipIndex: 0
     lastPlayedIndex: 0

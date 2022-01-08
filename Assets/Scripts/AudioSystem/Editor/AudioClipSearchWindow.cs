@@ -10,13 +10,13 @@ namespace MordiAudio
     {
         static AudioClipSearchWindow window;
         static AudioEvent target;
-        static AudioEvent.Sound targetClipCollection;
+        static SerializedProperty clipsProp;
 
-        public static void Open(AudioEvent audioEvent, AudioEvent.Sound clipCollection) {
+        public static void Open(AudioEvent audioEvent, SerializedProperty clipsProp) {
             window = (AudioClipSearchWindow)GetWindow(typeof(AudioClipSearchWindow), true, "Clip searcher");
             window.Show();
             target = audioEvent;
-            targetClipCollection = clipCollection;
+            AudioClipSearchWindow.clipsProp = clipsProp;
         }
 
         string search;
@@ -226,12 +226,16 @@ namespace MordiAudio
             if (clipSelected.Length == 0)
                 return;
 
-            List<AudioClip> selectedClipsList = new List<AudioClip>();
+            clipsProp.ClearArray();
+
             for (int i = 0; i < clipSelected.Length; i++) {
-                if (clipSelected[i])
-                    selectedClipsList.Add(ClipsFound[i]);
+                if (clipSelected[i]) {
+                    int index = clipsProp.arraySize;
+                    clipsProp.InsertArrayElementAtIndex(index);
+                    clipsProp.GetArrayElementAtIndex(index).objectReferenceValue = ClipsFound[i];
+                }
             }
-            targetClipCollection.clips = selectedClipsList;
+            clipsProp.serializedObject.ApplyModifiedProperties();
         }
 
         #region Utility methods
