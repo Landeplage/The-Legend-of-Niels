@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0746107431e01f54faed63c32e49714b, type: 3}
-  m_Name: Player Footstep
+  m_Name: Niels - Attack
   m_EditorClassIdentifier: 
   volume:
     min: 1
@@ -144,15 +144,11 @@ MonoBehaviour:
     loop: 0
     chanceToPlay: 1
     clips:
-    - {fileID: 8300000, guid: edbbf8df31983e2408c2c7e0b346056e, type: 3}
-    - {fileID: 8300000, guid: 07e297954c937954393cc0d5a5f5811c, type: 3}
-    - {fileID: 8300000, guid: cdc63c6903874b84ab215222a4ff4a96, type: 3}
-    - {fileID: 8300000, guid: 4635c1053d2e6b44f9c147bc5c4b426e, type: 3}
-    - {fileID: 8300000, guid: 5d947eca32188e84780d565eb058eb5f, type: 3}
-    - {fileID: 8300000, guid: 10da778a2afa1194fbf6fc8bc6c850c3, type: 3}
-    - {fileID: 8300000, guid: ea211154b71efae4093417586bcd67ea, type: 3}
-    - {fileID: 8300000, guid: 29cefe3d06590d54086a21fe74b3c0ee, type: 3}
-    - {fileID: 8300000, guid: 81d91784c5424174aa971f4f9e7b139f, type: 3}
-    - {fileID: 8300000, guid: 75b12116ec821874e92190511f56ab86, type: 3}
-    clipIndex: 7
-    lastPlayedIndex: 4
+    - {fileID: 8300000, guid: 7ecd613277377cc4588f5a56f328c73c, type: 3}
+    - {fileID: 8300000, guid: 33defb1b6d2598543ae05c21f31927fc, type: 3}
+    - {fileID: 8300000, guid: 7e65d4c419e4fc64ea1b5e155fb3b4c1, type: 3}
+    - {fileID: 8300000, guid: 3a6f7d5c654aabe42858d13bb6cd8856, type: 3}
+    - {fileID: 8300000, guid: 151b001f2bd939c4093a7daab6c12a81, type: 3}
+    - {fileID: 8300000, guid: 4d4f693d3405f084d931e4a19366a508, type: 3}
+    clipIndex: 0
+    lastPlayedIndex: 0

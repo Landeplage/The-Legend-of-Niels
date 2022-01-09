@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0746107431e01f54faed63c32e49714b, type: 3}
-  m_Name: Enemy Death
+  m_Name: Niels - Footstep
   m_EditorClassIdentifier: 
   volume:
     min: 1
@@ -144,21 +144,15 @@ MonoBehaviour:
     loop: 0
     chanceToPlay: 1
     clips:
-    - {fileID: 8300000, guid: f565894ce916fdf479459132897656c5, type: 3}
-    - {fileID: 8300000, guid: 11595ca2565508e44887725d6b0f5158, type: 3}
-    - {fileID: 8300000, guid: 2b400a030e0e8ed4585cc6b27575a9fe, type: 3}
-    - {fileID: 8300000, guid: c99240bc8a47d8140aca99831df65113, type: 3}
-    - {fileID: 8300000, guid: d0d9ad302ca2d844184c0a88299a65af, type: 3}
-    - {fileID: 8300000, guid: aed15c5ca4077ff4dbf80c7cc596edf3, type: 3}
-    clipIndex: 2
-    lastPlayedIndex: 4
-  - playTime: 0
-    loop: 0
-    chanceToPlay: 0.75
-    clips:
-    - {fileID: 8300000, guid: b0bdc602ae6cb7545b6fab0a4395e6d3, type: 3}
-    - {fileID: 8300000, guid: 7d62c110eaeeb4346bc37c52beefb843, type: 3}
-    - {fileID: 8300000, guid: 1f01a26d433c5ea48a4bc97a4d262dfd, type: 3}
-    - {fileID: 8300000, guid: bb39024c2bf5fb84c852d0bc3b972933, type: 3}
-    clipIndex: 1
-    lastPlayedIndex: 0
+    - {fileID: 8300000, guid: edbbf8df31983e2408c2c7e0b346056e, type: 3}
+    - {fileID: 8300000, guid: 07e297954c937954393cc0d5a5f5811c, type: 3}
+    - {fileID: 8300000, guid: cdc63c6903874b84ab215222a4ff4a96, type: 3}
+    - {fileID: 8300000, guid: 4635c1053d2e6b44f9c147bc5c4b426e, type: 3}
+    - {fileID: 8300000, guid: 5d947eca32188e84780d565eb058eb5f, type: 3}
+    - {fileID: 8300000, guid: 10da778a2afa1194fbf6fc8bc6c850c3, type: 3}
+    - {fileID: 8300000, guid: ea211154b71efae4093417586bcd67ea, type: 3}
+    - {fileID: 8300000, guid: 29cefe3d06590d54086a21fe74b3c0ee, type: 3}
+    - {fileID: 8300000, guid: 81d91784c5424174aa971f4f9e7b139f, type: 3}
+    - {fileID: 8300000, guid: 75b12116ec821874e92190511f56ab86, type: 3}
+    clipIndex: 8
+    lastPlayedIndex: 2

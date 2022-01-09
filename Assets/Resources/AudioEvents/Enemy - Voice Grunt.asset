@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0746107431e01f54faed63c32e49714b, type: 3}
-  m_Name: Enemy Take Damage
+  m_Name: Enemy - Voice Grunt
   m_EditorClassIdentifier: 
   volume:
     min: 1
@@ -144,11 +144,11 @@ MonoBehaviour:
     loop: 0
     chanceToPlay: 1
     clips:
-    - {fileID: 8300000, guid: f565894ce916fdf479459132897656c5, type: 3}
-    - {fileID: 8300000, guid: 11595ca2565508e44887725d6b0f5158, type: 3}
-    - {fileID: 8300000, guid: 2b400a030e0e8ed4585cc6b27575a9fe, type: 3}
-    - {fileID: 8300000, guid: c99240bc8a47d8140aca99831df65113, type: 3}
-    - {fileID: 8300000, guid: d0d9ad302ca2d844184c0a88299a65af, type: 3}
-    - {fileID: 8300000, guid: aed15c5ca4077ff4dbf80c7cc596edf3, type: 3}
-    clipIndex: 5
-    lastPlayedIndex: 1
+    - {fileID: 8300000, guid: 2eeca09232397b3459bcf2c772e0e7d2, type: 3}
+    - {fileID: 8300000, guid: e8d58f452c1f10b4992e8d83c25379fa, type: 3}
+    - {fileID: 8300000, guid: 1c0fb7de43ccd3a40a67104601d1b975, type: 3}
+    - {fileID: 8300000, guid: fdc06e8e42cbd794c8ac45628695742d, type: 3}
+    - {fileID: 8300000, guid: 1feafddd1a9551548a39e02543385d61, type: 3}
+    - {fileID: 8300000, guid: 33f0fa3df4bd6144b8ecccab06146d59, type: 3}
+    clipIndex: 3
+    lastPlayedIndex: 0

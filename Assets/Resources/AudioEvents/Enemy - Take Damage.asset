@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0746107431e01f54faed63c32e49714b, type: 3}
-  m_Name: Player Attack
+  m_Name: Enemy - Take Damage
   m_EditorClassIdentifier: 
   volume:
     min: 1
@@ -144,11 +144,17 @@ MonoBehaviour:
     loop: 0
     chanceToPlay: 1
     clips:
-    - {fileID: 8300000, guid: 7ecd613277377cc4588f5a56f328c73c, type: 3}
-    - {fileID: 8300000, guid: 33defb1b6d2598543ae05c21f31927fc, type: 3}
-    - {fileID: 8300000, guid: 7e65d4c419e4fc64ea1b5e155fb3b4c1, type: 3}
-    - {fileID: 8300000, guid: 3a6f7d5c654aabe42858d13bb6cd8856, type: 3}
-    - {fileID: 8300000, guid: 151b001f2bd939c4093a7daab6c12a81, type: 3}
-    - {fileID: 8300000, guid: 4d4f693d3405f084d931e4a19366a508, type: 3}
-    clipIndex: 0
-    lastPlayedIndex: 0
+    - {fileID: 8300000, guid: f565894ce916fdf479459132897656c5, type: 3}
+    - {fileID: 8300000, guid: 11595ca2565508e44887725d6b0f5158, type: 3}
+    - {fileID: 8300000, guid: 2b400a030e0e8ed4585cc6b27575a9fe, type: 3}
+    - {fileID: 8300000, guid: c99240bc8a47d8140aca99831df65113, type: 3}
+    - {fileID: 8300000, guid: d0d9ad302ca2d844184c0a88299a65af, type: 3}
+    - {fileID: 8300000, guid: aed15c5ca4077ff4dbf80c7cc596edf3, type: 3}
+    clipIndex: 5
+    lastPlayedIndex: 1
+  - playTime: 0
+    loop: 0
+    chanceToPlay: 1
+    clips: []
+    clipIndex: 5
+    lastPlayedIndex: 1

@@ -26,10 +26,10 @@ namespace MordiAudio
 
 		class Styles
         {
-			public Color colCurveVolume, colCurveSpatialBlend, colCurveSpread, colCurveReverbZoneMix, colSliderLabels;
-			public Color colCurveTimelineLabel;
+			public Color colCurveVolume, colCurveSpatialBlend, colCurveSpread, colCurveReverbZoneMix, colSliderLabels, colCurveTimelineLabel,
+				colClipLabel;
 			public GUIStyle buttonPlaybackControl, curveLegendButton, curveTimelineLabel, curveTimelineLabelRightAlign, curveValueLabel, boxSpatialPanner,
-				labelSliderGuide;
+				labelSliderGuide, labelClip, labelClipsEmpty;
 
 			public Styles() {
 				// Colors
@@ -79,6 +79,21 @@ namespace MordiAudio
 					fontSize = 9,
 					alignment = TextAnchor.MiddleCenter
 				};
+
+				labelClip = new GUIStyle(GUI.skin.label)
+				{
+					contentOffset = new Vector2(-5f, 0f),
+					alignment = TextAnchor.MiddleRight,
+					fontSize = 9
+				};
+
+				colClipLabel = new Color(1f, 1f, 1f, 0.75f);
+
+				labelClipsEmpty = new GUIStyle(GUI.skin.label)
+				{
+					alignment = TextAnchor.MiddleCenter,
+					fontStyle = FontStyle.Italic
+				};
 			}
 
 			Color ByteToFloatColor(byte r, byte g, byte b, byte a = 255) {
@@ -89,7 +104,7 @@ namespace MordiAudio
 
 		class Content
         {
-			public GUIContent buttonPlay, buttonStop;
+			public GUIContent buttonPlay, buttonStop, buttonClipsSearch, buttonMenu, buttonLoop;
 
 			public Material matColor, matTexture;
 
@@ -98,6 +113,9 @@ namespace MordiAudio
 			public Content() {
 				buttonPlay = new GUIContent(LoadTexture("mas_icon_play"), "Start playback");
 				buttonStop = new GUIContent(LoadTexture("mas_icon_stop"), "Stop playback");
+				buttonClipsSearch = new GUIContent(LoadTexture("mas_icon_search"), "Find clips");
+				buttonMenu = new GUIContent(LoadTexture("mas_icon_menu"), "Open menu");
+				buttonLoop = new GUIContent(LoadTexture("mas_icon_loop"), "Loop");
 
 				var shader = Shader.Find("Hidden/Internal-Colored");
 				matColor = new Material(shader);
@@ -145,7 +163,6 @@ namespace MordiAudio
 			public enum FetchType
             {
 				basedOnFirstClip,
-				basedOnSearch,
 				clearClips
             }
 
@@ -281,63 +298,18 @@ namespace MordiAudio
 			// Clip collections
 			EditorGUILayout.LabelField("Sounds");
             for (int i = 0; i < soundsProp.arraySize; i++) {
-				GUILayout.BeginVertical(EditorStyles.helpBox);
-				SerializedProperty soundProp = soundsProp.GetArrayElementAtIndex(i);
-
-				GUILayout.BeginHorizontal();
-
-				if (GUILayout.Button("...", GUILayout.Width(25f))) {
-					SerializedProperty clipsProp = soundProp.FindPropertyRelative("clips");
-					GenericMenu menu = new GenericMenu();
-					menu.AddItem(new GUIContent("Search..."), false, OnClipCollectionDropdownButton, new ClipCollectionDropdownSelection() {
-						clipsProp = clipsProp,
-						fetchType = ClipCollectionDropdownSelection.FetchType.basedOnSearch
-					});
-					menu.AddItem(new GUIContent("Fetch based on first clip"), false, OnClipCollectionDropdownButton, new ClipCollectionDropdownSelection() {
-						clipsProp = clipsProp,
-						fetchType = ClipCollectionDropdownSelection.FetchType.basedOnFirstClip
-					});
-					menu.AddSeparator("");
-					menu.AddItem(new GUIContent("Clear clips"), false, OnClipCollectionDropdownButton, new ClipCollectionDropdownSelection() {
-						clipsProp = clipsProp,
-						fetchType = ClipCollectionDropdownSelection.FetchType.clearClips
-					});
-					menu.ShowAsContext();
-				}
-
-				/*EditorGUILayout.LabelField("Play", GUILayout.Width(30f));
-				clipCollection.playTime = (AudioEvent.ClipCollection.PlayTime)EditorGUILayout.EnumPopup(clipCollection.playTime, GUILayout.Width(75f));*/
-				EditorGUILayout.LabelField("Loop", GUILayout.Width(30f));
-				SerializedProperty soundLoopProp = soundProp.FindPropertyRelative("loop");
-				soundLoopProp.boolValue = EditorGUILayout.Toggle(soundLoopProp.boolValue);
-
-				SerializedProperty chanceToPlayProp = soundProp.FindPropertyRelative("chanceToPlay");
-				chanceToPlayProp.floatValue = Mathf.Clamp01(EditorGUILayout.IntField("Chance", Mathf.RoundToInt(chanceToPlayProp.floatValue * 100)) / 100f);
-				GUILayout.Label("%", GUILayout.Width(25f));
-				
-
-				GUILayout.FlexibleSpace();
-
-				if (GUILayout.Button("X", GUILayout.Width(25f))) {
-					clipCollectionQueuedForDeletionIndex = i;
-				}
-
-				GUILayout.EndHorizontal();
-				EditorGUI.indentLevel += 1;
-				Color defaultColor = GUI.backgroundColor;
-				GUI.backgroundColor = new Color(1f, 1f, 1f, 0.5f);
-				EditorGUILayout.PropertyField(soundProp.FindPropertyRelative("clips"));
-				GUI.backgroundColor = defaultColor;
-				EditorGUI.indentLevel -= 1;
-				GUILayout.EndVertical();
+				SoundGUI(soundsProp.GetArrayElementAtIndex(i), i);
 			}
 			
 			Space();
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button("+", GUILayout.Width(25f), GUILayout.Height(25f))) {
-				soundsProp.InsertArrayElementAtIndex(soundsProp.arraySize);
-				UpdateAuditioningAudioSources();
+				int index = soundsProp.arraySize;
+				soundsProp.InsertArrayElementAtIndex(index);
+				soundsProp = serializedObject.FindProperty("sounds");
+				SerializedProperty soundProp = soundsProp.GetArrayElementAtIndex(index);
+				soundProp.FindPropertyRelative("clips").ClearArray();
 			}
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
@@ -584,6 +556,113 @@ namespace MordiAudio
 			GUI.contentColor = contentCol;
 		}
 
+		void SoundGUI(SerializedProperty soundProp, int index) {
+			GUILayout.BeginVertical(EditorStyles.helpBox);
+			GUILayout.BeginHorizontal();
+			int soundNum = index + 1;
+			GUILayout.Label($"Sound {(soundNum < 10 ? "0" : "")}{soundNum}");
+			
+			SerializedProperty soundLoopProp = soundProp.FindPropertyRelative("loop");
+			Color backgroundColor = GUI.backgroundColor;
+			if (soundLoopProp.boolValue)
+				GUI.backgroundColor = Color.green;
+			if (GUILayout.Button(content.buttonLoop, GUILayout.Width(25f))) {
+				soundLoopProp.boolValue = !soundLoopProp.boolValue;
+            }
+			GUI.backgroundColor = backgroundColor;
+
+			/*EditorGUILayout.LabelField("Play", GUILayout.Width(30f));
+			clipCollection.playTime = (AudioEvent.ClipCollection.PlayTime)EditorGUILayout.EnumPopup(clipCollection.playTime, GUILayout.Width(75f));*/
+
+			SerializedProperty chanceToPlayProp = soundProp.FindPropertyRelative("chanceToPlay");
+			chanceToPlayProp.floatValue = Mathf.Clamp01(EditorGUILayout.IntField(Mathf.RoundToInt(chanceToPlayProp.floatValue * 100), GUILayout.Width(40f)) / 100f);
+			GUILayout.Label("%", GUILayout.Width(15f));
+
+			GUILayout.FlexibleSpace();
+			if (GUILayout.Button("X", GUILayout.Width(25f))) {
+				clipCollectionQueuedForDeletionIndex = index;
+			}
+			GUILayout.EndHorizontal();
+
+			EditorGUI.indentLevel += 1;
+			ClipsGUI(soundProp.FindPropertyRelative("clips"));
+			EditorGUI.indentLevel -= 1;
+			GUILayout.EndVertical();
+		}
+
+		void ClipsGUI(SerializedProperty clipsProp) {
+			GUILayout.BeginHorizontal();
+
+			if (GUILayout.Button(content.buttonClipsSearch, GUILayout.Width(25f))) {
+				AudioClipSearchWindow.Open((AudioEvent)target, clipsProp);
+			}
+
+			if (GUILayout.Button(content.buttonMenu, GUILayout.Width(25f))) {
+				GenericMenu menu = new GenericMenu();
+				menu.AddItem(new GUIContent("Fetch based on first clip"), false, OnClipCollectionDropdownButton, new ClipCollectionDropdownSelection()
+				{
+					clipsProp = clipsProp,
+					fetchType = ClipCollectionDropdownSelection.FetchType.basedOnFirstClip
+				});
+				menu.AddSeparator("");
+				menu.AddItem(new GUIContent("Clear clips"), false, OnClipCollectionDropdownButton, new ClipCollectionDropdownSelection()
+				{
+					clipsProp = clipsProp,
+					fetchType = ClipCollectionDropdownSelection.FetchType.clearClips
+				});
+				menu.ShowAsContext();
+			}
+
+			GUILayout.FlexibleSpace();
+
+			GUILayout.Label($"{clipsProp.arraySize} {(clipsProp.arraySize == 1 ? "clip" : "clips")}");
+
+			GUILayout.EndHorizontal();
+
+			if (clipsProp.arraySize == 0) {
+				GUILayout.Label("No clips", styles.labelClipsEmpty);
+				return;
+            }
+
+			// Find longest clip duration
+			float longestDuration = 0f;
+			for (int i = 0; i < clipsProp.arraySize; i++) {
+				SerializedProperty clipProp = clipsProp.GetArrayElementAtIndex(i);
+				AudioClip clip = clipProp.objectReferenceValue as AudioClip;
+				if (clip == null)
+					continue;
+
+				if (clip.length > longestDuration)
+					longestDuration = clip.length;
+			}
+
+			for (int i = 0; i < clipsProp.arraySize; i++) {
+				SerializedProperty clipProp = clipsProp.GetArrayElementAtIndex(i);
+				AudioClip clip = clipProp.objectReferenceValue as AudioClip;
+				if (clip == null)
+					continue;
+
+				float lengthFactor = clip.length / longestDuration;
+
+				Texture texture = AssetPreview.GetAssetPreview(clip);
+				GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(15f));
+
+				// Draw waveform texture
+				Rect rect = GUILayoutUtility.GetLastRect();
+				BeginDraw(rect);
+				SetGLTexture(texture);
+				GL.Begin(GL.QUADS);
+				DrawTexturedQuad(0f, 0f, rect.width * lengthFactor, rect.height);
+				GL.End();
+				EndDraw();
+
+				// Clip name label
+				GUI.contentColor = styles.colClipLabel;
+				GUI.Label(rect, clip.name, styles.labelClip);
+				GUI.contentColor = Color.white;
+            }
+        }
+
 		#endregion
 
 		#region OpenGL draw methods
@@ -755,9 +834,6 @@ namespace MordiAudio
                 case ClipCollectionDropdownSelection.FetchType.basedOnFirstClip:
 					FetchClipsBasedOnFirstClip(selection.clipsProp);
 					break;
-                case ClipCollectionDropdownSelection.FetchType.basedOnSearch:
-					AudioClipSearchWindow.Open((AudioEvent)target, selection.clipsProp);
-                    break;
 				case ClipCollectionDropdownSelection.FetchType.clearClips:
 					selection.clipsProp.ClearArray();
 					serializedObject.ApplyModifiedProperties();
@@ -806,11 +882,8 @@ namespace MordiAudio
 
 				// Add clip to clips-list
 				AudioClip clip = AssetDatabase.LoadAssetAtPath<AudioClip>(path);
-				Debug.Log("Inserting " + clip.name);
 				clipsProp.InsertArrayElementAtIndex(i);
 				clipsProp.GetArrayElementAtIndex(i).objectReferenceValue = clip;
-				Debug.Log(clipsProp.GetArrayElementAtIndex(i).objectReferenceValue);
-				//clipCollection.clips.Add();
             }
         }
 
