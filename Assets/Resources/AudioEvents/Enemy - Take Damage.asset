@@ -19,8 +19,8 @@ MonoBehaviour:
     min: 0
     max: 0
   pitch:
-    min: 1
-    max: 1
+    min: 1.2
+    max: 1.48
   cooldownSettings:
     enabled: 0
     time: 0
@@ -150,11 +150,5 @@ MonoBehaviour:
     - {fileID: 8300000, guid: c99240bc8a47d8140aca99831df65113, type: 3}
     - {fileID: 8300000, guid: d0d9ad302ca2d844184c0a88299a65af, type: 3}
     - {fileID: 8300000, guid: aed15c5ca4077ff4dbf80c7cc596edf3, type: 3}
-    clipIndex: 5
-    lastPlayedIndex: 1
-  - playTime: 0
-    loop: 0
-    chanceToPlay: 1
-    clips: []
-    clipIndex: 5
-    lastPlayedIndex: 1
+    clipIndex: 2
+    indexHistory: 050000000100000000000000

@@ -27,9 +27,9 @@ namespace MordiAudio
 		class Styles
         {
 			public Color colCurveVolume, colCurveSpatialBlend, colCurveSpread, colCurveReverbZoneMix, colSliderLabels, colCurveTimelineLabel,
-				colClipLabel;
+				colClipLabel, colBoxClipBackground;
 			public GUIStyle buttonPlaybackControl, curveLegendButton, curveTimelineLabel, curveTimelineLabelRightAlign, curveValueLabel, boxSpatialPanner,
-				labelSliderGuide, labelClip, labelClipsEmpty;
+				labelSliderGuide, labelClip, labelClipsEmpty, boxClip;
 
 			public Styles() {
 				// Colors
@@ -94,6 +94,12 @@ namespace MordiAudio
 					alignment = TextAnchor.MiddleCenter,
 					fontStyle = FontStyle.Italic
 				};
+
+				boxClip = new GUIStyle(GUI.skin.box) {
+					margin = new RectOffset(GUI.skin.box.margin.left, GUI.skin.box.margin.right, 1, 0)
+				};
+
+				colBoxClipBackground = new Color(0.75f, 0.75f, 0.75f, 0.5f);
 			}
 
 			Color ByteToFloatColor(byte r, byte g, byte b, byte a = 255) {
@@ -330,6 +336,9 @@ namespace MordiAudio
 
 			// Apply any modified properties
 			serializedObject.ApplyModifiedProperties();
+
+			if (AnyAuditionSourceIsPlaying())
+				Repaint();
 		}
 
 		#region Inspector GUI methods
@@ -624,8 +633,10 @@ namespace MordiAudio
 				return;
             }
 
-			// Find longest clip duration
+			// Find longest clip duration and currently playing clip index
 			float longestDuration = 0f;
+			int currentlyPlayingClipIndex = -1;
+			float currentPlaybackPosition = 0f;
 			for (int i = 0; i < clipsProp.arraySize; i++) {
 				SerializedProperty clipProp = clipsProp.GetArrayElementAtIndex(i);
 				AudioClip clip = clipProp.objectReferenceValue as AudioClip;
@@ -634,6 +645,16 @@ namespace MordiAudio
 
 				if (clip.length > longestDuration)
 					longestDuration = clip.length;
+
+                for (int n = 0; n < auditioningAudioSources.Count; n++) {
+					if (auditioningAudioSources[n] == null)
+						continue;
+					if (auditioningAudioSources[n].isPlaying && auditioningAudioSources[n].clip == clip) {
+						currentlyPlayingClipIndex = i;
+						currentPlaybackPosition = auditioningAudioSources[n].time;
+						break;
+					}
+                }
 			}
 
 			for (int i = 0; i < clipsProp.arraySize; i++) {
@@ -645,7 +666,10 @@ namespace MordiAudio
 				float lengthFactor = clip.length / longestDuration;
 
 				Texture texture = AssetPreview.GetAssetPreview(clip);
-				GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(15f));
+				Color backgroundColor = GUI.backgroundColor;
+				GUI.backgroundColor = styles.colBoxClipBackground;
+				GUILayout.Box("", styles.boxClip, GUILayout.ExpandWidth(true), GUILayout.Height(15f));
+				GUI.backgroundColor = backgroundColor;
 
 				// Draw waveform texture
 				Rect rect = GUILayoutUtility.GetLastRect();
@@ -654,6 +678,28 @@ namespace MordiAudio
 				GL.Begin(GL.QUADS);
 				DrawTexturedQuad(0f, 0f, rect.width * lengthFactor, rect.height);
 				GL.End();
+				if (i == currentlyPlayingClipIndex) {
+					content.matColor.SetPass(0);
+					GL.Begin(GL.QUADS);
+					float pos = currentPlaybackPosition / clip.length;
+
+					// Tint
+					GL.Color(new Color(0f, 0f, 0f, Mathf.Clamp01(0.5f - currentPlaybackPosition) * 0.35f));
+					DrawQuad(0f, 0f, rect.width, rect.height);
+
+					// Playback position indicator
+					const int INDICATOR_WIDTH = 100;
+                    for (int n = 0; n < INDICATOR_WIDTH; n++) {
+						float x = (pos * rect.width * lengthFactor) - n;
+						if (x < 0f)
+							break;
+						float a = (INDICATOR_WIDTH - n) / (float)INDICATOR_WIDTH;
+						float aFade = Mathf.Clamp01(3f - pos * 3f); // Fade near the end
+						GL.Color(new Color(1f, 1f, 1f, a * a * a * aFade * 0.35f));
+						DrawQuad(x, 0f, 1f, rect.height);
+					}
+					GL.End();
+				}
 				EndDraw();
 
 				// Clip name label

@@ -13,7 +13,7 @@ namespace MordiAudio
         static SerializedProperty clipsProp;
 
         public static void Open(AudioEvent audioEvent, SerializedProperty clipsProp) {
-            window = (AudioClipSearchWindow)GetWindow(typeof(AudioClipSearchWindow), true, "Clip searcher");
+            window = (AudioClipSearchWindow)GetWindow(typeof(AudioClipSearchWindow), true, "Clip Finder");
             window.Show();
             target = audioEvent;
             AudioClipSearchWindow.clipsProp = clipsProp;

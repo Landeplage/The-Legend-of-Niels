@@ -19,11 +19,11 @@ MonoBehaviour:
     min: 0
     max: 0
   pitch:
-    min: 1
-    max: 1
+    min: 1.13
+    max: 1.69
   cooldownSettings:
     enabled: 0
-    time: 0
+    time: 1
   outputGroup: {fileID: -3893314905816607252, guid: 97046b2873536a3429473aeb62b340ca,
     type: 2}
   spatialSettings:
@@ -151,4 +151,4 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 151b001f2bd939c4093a7daab6c12a81, type: 3}
     - {fileID: 8300000, guid: 4d4f693d3405f084d931e4a19366a508, type: 3}
     clipIndex: 0
-    lastPlayedIndex: 0
+    indexHistory: 050000000200000001000000

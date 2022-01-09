@@ -107,7 +107,7 @@ namespace MordiAudio
             public List<AudioClip> clips;
 
             [HideInInspector] public int clipIndex;
-            [HideInInspector] public int lastPlayedIndex;
+            [HideInInspector] public int[] indexHistory;
 
             public void RandomizeIndex() { RandomizeIndex(0, clips.Count); }
 
@@ -117,12 +117,40 @@ namespace MordiAudio
             /// <param name="min">Index from (inclusive)</param>
             /// <param name="max">Index to (exclusive)</param>
             public void RandomizeIndex(int min, int max) {
-                int newIndex;
+                const int MAX_TRIES = 99;
+                int newIndex, tries = 0;
                 do {
                     newIndex = Random.Range(min, max);
-                } while (clips.Count > 1 && newIndex == lastPlayedIndex);
+                    tries++;
+                } while (clips.Count > 1 && System.Array.IndexOf(indexHistory, newIndex) > -1 && tries < MAX_TRIES);
 
                 clipIndex = newIndex;
+            }
+
+            public void AddToHistory(int index) {
+                if (!ValidateHistory())
+                    return;
+
+                for (int i = indexHistory.Length - 1; i > 0; i--) {
+                    indexHistory[i] = indexHistory[i - 1];
+                }
+                indexHistory[0] = index;
+            }
+
+            public bool ValidateHistory() {
+                int historyLength = Mathf.FloorToInt(clips.Count * 0.6f);
+
+                if (indexHistory != null) {
+                    if (indexHistory.Length == historyLength && indexHistory.Length > 0)
+                        return true;
+                }
+
+                indexHistory = new int[historyLength];
+                for (int i = 0; i < indexHistory.Length; i++) {
+                    indexHistory[i] = -1;
+                }
+
+                return indexHistory.Length > 0;
             }
         }
 
@@ -266,7 +294,7 @@ namespace MordiAudio
             // Play
             source.Play();
 
-            clipCollection.lastPlayedIndex = clipCollection.clipIndex;
+            clipCollection.AddToHistory(clipCollection.clipIndex);
             clipCollection.RandomizeIndex();
         }
 

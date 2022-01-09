@@ -150,8 +150,8 @@ MonoBehaviour:
     - {fileID: 8300000, guid: c99240bc8a47d8140aca99831df65113, type: 3}
     - {fileID: 8300000, guid: d0d9ad302ca2d844184c0a88299a65af, type: 3}
     - {fileID: 8300000, guid: aed15c5ca4077ff4dbf80c7cc596edf3, type: 3}
-    clipIndex: 1
-    lastPlayedIndex: 2
+    clipIndex: 4
+    indexHistory: 
   - playTime: 0
     loop: 0
     chanceToPlay: 0.75
@@ -160,5 +160,5 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 7d62c110eaeeb4346bc37c52beefb843, type: 3}
     - {fileID: 8300000, guid: 1f01a26d433c5ea48a4bc97a4d262dfd, type: 3}
     - {fileID: 8300000, guid: bb39024c2bf5fb84c852d0bc3b972933, type: 3}
-    clipIndex: 0
-    lastPlayedIndex: 1
+    clipIndex: 1
+    indexHistory: 
