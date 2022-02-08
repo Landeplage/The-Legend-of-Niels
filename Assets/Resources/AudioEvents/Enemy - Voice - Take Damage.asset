@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0746107431e01f54faed63c32e49714b, type: 3}
-  m_Name: Enemy - Voice Grunt
+  m_Name: Enemy - Voice - Take Damage
   m_EditorClassIdentifier: 
   volume:
     min: 1
