@@ -253,6 +253,10 @@ namespace MordiAudio
             if (!ValidateCooldown()) {
                 return;
             }
+            if (audioSources.Count == 0) {
+                Debug.LogError("Auditioning audio source count is 0.");
+                return;
+            }
 
             for (int i = 0; i < sounds.Count; i++) {
                 if (audioSources.Count < i)

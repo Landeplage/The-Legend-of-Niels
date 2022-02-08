@@ -139,16 +139,4 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  sounds:
-  - playTime: 0
-    loop: 0
-    chanceToPlay: 1
-    clips:
-    - {fileID: 8300000, guid: f565894ce916fdf479459132897656c5, type: 3}
-    - {fileID: 8300000, guid: 11595ca2565508e44887725d6b0f5158, type: 3}
-    - {fileID: 8300000, guid: 2b400a030e0e8ed4585cc6b27575a9fe, type: 3}
-    - {fileID: 8300000, guid: c99240bc8a47d8140aca99831df65113, type: 3}
-    - {fileID: 8300000, guid: d0d9ad302ca2d844184c0a88299a65af, type: 3}
-    - {fileID: 8300000, guid: aed15c5ca4077ff4dbf80c7cc596edf3, type: 3}
-    clipIndex: 2
-    indexHistory: 050000000100000000000000
+  sounds: []
