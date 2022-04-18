@@ -144,11 +144,6 @@ MonoBehaviour:
     loop: 0
     chanceToPlay: 1
     clips:
-    - {fileID: 8300000, guid: 2eeca09232397b3459bcf2c772e0e7d2, type: 3}
-    - {fileID: 8300000, guid: e8d58f452c1f10b4992e8d83c25379fa, type: 3}
-    - {fileID: 8300000, guid: 1c0fb7de43ccd3a40a67104601d1b975, type: 3}
-    - {fileID: 8300000, guid: fdc06e8e42cbd794c8ac45628695742d, type: 3}
-    - {fileID: 8300000, guid: 1feafddd1a9551548a39e02543385d61, type: 3}
-    - {fileID: 8300000, guid: 33f0fa3df4bd6144b8ecccab06146d59, type: 3}
+    - {fileID: 8300000, guid: 95058bf3941a7400f9a061565fd9de57, type: 3}
     clipIndex: 0
     indexHistory: 
