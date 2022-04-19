@@ -19,8 +19,8 @@ MonoBehaviour:
     min: 0
     max: 0
   pitch:
-    min: 1
-    max: 1
+    min: 0.76
+    max: 0.9
   cooldownSettings:
     enabled: 0
     time: 0
@@ -144,6 +144,17 @@ MonoBehaviour:
     loop: 0
     chanceToPlay: 1
     clips:
-    - {fileID: 8300000, guid: 0e53f58fee2674a2cb924f28c48cfc41, type: 3}
+    - {fileID: 8300000, guid: 07c27102fd27d4ffe840ff7aeb7c2a03, type: 3}
+    - {fileID: 8300000, guid: 2c18cd84215504edf9a70e38d20aa489, type: 3}
+    - {fileID: 8300000, guid: e4b04e074dab94bba960fbe590317dd4, type: 3}
     clipIndex: 0
-    indexHistory: 
+    indexHistory: 01000000
+  - playTime: 0
+    loop: 0
+    chanceToPlay: 1
+    clips:
+    - {fileID: 8300000, guid: f770326620f4248bcbb94e6410ed287e, type: 3}
+    - {fileID: 8300000, guid: 29f930bd68e614aa48c4dfd32dbe908f, type: 3}
+    - {fileID: 8300000, guid: bc424c28bee85479b84482fe354d5b4a, type: 3}
+    clipIndex: 0
+    indexHistory: 02000000

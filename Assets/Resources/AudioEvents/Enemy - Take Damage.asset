@@ -20,7 +20,7 @@ MonoBehaviour:
     max: 0
   pitch:
     min: 1
-    max: 1
+    max: 1.2
   cooldownSettings:
     enabled: 0
     time: 0
@@ -144,13 +144,18 @@ MonoBehaviour:
     loop: 0
     chanceToPlay: 1
     clips:
-    - {fileID: 8300000, guid: 30cffca5578f649b2bf37d2afac4c8a1, type: 3}
-    clipIndex: 0
-    indexHistory: 
+    - {fileID: 8300000, guid: 07c27102fd27d4ffe840ff7aeb7c2a03, type: 3}
+    - {fileID: 8300000, guid: 2c18cd84215504edf9a70e38d20aa489, type: 3}
+    - {fileID: 8300000, guid: e4b04e074dab94bba960fbe590317dd4, type: 3}
+    clipIndex: 1
+    indexHistory: 02000000
   - playTime: 0
     loop: 0
-    chanceToPlay: 0.35
+    chanceToPlay: 0.45
     clips:
-    - {fileID: 8300000, guid: d9fc43268487a40f0bef1f9557f71665, type: 3}
+    - {fileID: 8300000, guid: 4e9726bb8ea6c4d4cbcb91582abb0457, type: 3}
+    - {fileID: 8300000, guid: 55426cfb84abc4ddf804b376952172ab, type: 3}
+    - {fileID: 8300000, guid: fa3fed5413037439ca3ebd931f1edf35, type: 3}
+    - {fileID: 8300000, guid: fa2d3b224a8e442909651dd851f40630, type: 3}
     clipIndex: 0
-    indexHistory: 
+    indexHistory: 0300000001000000
