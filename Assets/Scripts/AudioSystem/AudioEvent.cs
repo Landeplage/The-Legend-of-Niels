@@ -5,7 +5,7 @@ using UnityEngine.Audio;
 
 namespace MordiAudio
 {
-    [System.Serializable, CreateAssetMenu(fileName = "AudioEvent", menuName = "AudioEvents/AudioEvent")]
+    [System.Serializable, CreateAssetMenu(fileName = "AudioEvent", menuName = "Mordis Audio System/AudioEvent")]
     public class AudioEvent : ScriptableObject
     {
         [System.Serializable]
@@ -213,11 +213,15 @@ namespace MordiAudio
 
         #region Validation methods
 
-        bool ValidateCooldown() {
-            return lastPlayedTime <= nextAvailablePlayTime;
+        /// <summary>
+        /// Validate the cooldown timer.
+        /// </summary>
+        /// <returns>True if the cooldown time has elapsed.</returns>
+        bool CooldownIsValid() {
+            return cooldownSettings.enabled ? Time.time >= nextAvailablePlayTime : true;
         }
 
-        bool ValidateAudioSource(AudioSource source) {
+        bool AudioSourceIsValid(AudioSource source) {
             if (source == null) {
                 Debug.Log($"AudioEvent: Tried to play {name} with source equal to null.");
                 return false;
@@ -232,7 +236,7 @@ namespace MordiAudio
             return true;
         }
 
-        bool ValidateClipCollection(Sound clipCollection) {
+        bool SoundIsValid(Sound clipCollection) {
             if (clipCollection.clips.Count == 0)
                 return false;
 
@@ -250,15 +254,14 @@ namespace MordiAudio
         /// Used for auditioning in the inspector.
         /// </summary>
         public void Audition(List<AudioSource> audioSources, Vector3 position) {
-            if (!ValidateCooldown()) {
+            if (!CooldownIsValid())
                 return;
-            }
 
             for (int i = 0; i < sounds.Count; i++) {
                 if (audioSources.Count < i)
                     break;
 
-                Play(audioSources[i], sounds[i], position);
+                PlaySource(audioSources[i], sounds[i], position);
             }
 
             lastPlayedTime = Time.time;
@@ -266,26 +269,25 @@ namespace MordiAudio
         }
 
         public virtual void Play(Vector3 position) {
-            if (!ValidateCooldown()) {
+            if (!CooldownIsValid())
                 return;
-            }
 
             for (int i = 0; i < sounds.Count; i++) {
-                Play(GetAvailableSourceFromPool(), sounds[i], position);
+                PlaySource(GetAvailableSourceFromPool(), sounds[i], position);
             }
 
             lastPlayedTime = Time.time;
             nextAvailablePlayTime = lastPlayedTime + cooldownSettings.time;
         }
 
-        public virtual void Play(AudioSource source, Sound clipCollection, Vector3 position) {
-            if (!ValidateClipCollection(clipCollection))
+        void PlaySource(AudioSource source, Sound sound, Vector3 position) {
+            if (!SoundIsValid(sound))
                 return;
 
-            if (!ValidateAudioSource(source))
+            if (!AudioSourceIsValid(source))
                 return;
 
-            UpdateAudioSourceProperties(source, clipCollection);
+            UpdateAudioSourceProperties(source, sound);
 
             // Move AudioSource to position
             if (spatialSettings.enabled)
@@ -294,8 +296,8 @@ namespace MordiAudio
             // Play
             source.Play();
 
-            clipCollection.AddToHistory(clipCollection.clipIndex);
-            clipCollection.RandomizeIndex();
+            sound.AddToHistory(sound.clipIndex);
+            sound.RandomizeIndex();
         }
 
         public void Stop() {

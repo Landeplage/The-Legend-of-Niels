@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using System.Linq;
+using MordiAudio.Utility;
 
 namespace MordiAudio
 {
@@ -107,9 +107,9 @@ namespace MordiAudio
 
                 // Count similarly named clips
                 int groupCount = 0;
-                string truncatedName = TruncateTrailingNumbers(ClipsFound[i].name);
+                string truncatedName = ClipsFound[i].name.TrimTrailingNumbersAndWhitespace();
                 for (int n = 1; n < ClipsFound.Length - i; n++) {
-                    if (truncatedName == TruncateTrailingNumbers(ClipsFound[i + n].name)) {
+                    if (truncatedName == ClipsFound[i + n].name.TrimTrailingNumbersAndWhitespace()) {
                         groupCount += 1;
                     } else {
                         break;
@@ -138,7 +138,7 @@ namespace MordiAudio
                         }
                     }
 
-                    clipFoldout[i] = EditorGUILayout.Foldout(clipFoldout[i], TruncateTrailingNumbers(ClipsFound[i].name), true);
+                    clipFoldout[i] = EditorGUILayout.Foldout(clipFoldout[i], ClipsFound[i].name.TrimTrailingNumbersAndWhitespace(), true);
                     GUILayout.EndHorizontal();
                     if (clipFoldout[i]) {
                         for (int m = 0; m <= groupCount; m++) {
@@ -161,21 +161,7 @@ namespace MordiAudio
         }
 
         AudioClip[] FetchClips(string search) {
-            string[] assetGUIDs = AssetDatabase.FindAssets($"t:AudioClip {search}");
-
-            if (assetGUIDs == null)
-                return null;
-
-            if (assetGUIDs.Length == 0)
-                return null;
-
-            AudioClip[] clips = new AudioClip[assetGUIDs.Length];
-            for (int i = 0; i < assetGUIDs.Length; i++) {
-                string path = AssetDatabase.GUIDToAssetPath(assetGUIDs[i]);
-                clips[i] = AssetDatabase.LoadAssetAtPath<AudioClip>(path);
-            }
-
-            return clips;
+            return Utility.Editor.FindAndLoadAssets<AudioClip>(search);
         }
 
         void UpdateClipSelectionAndFoldoutArray() {
@@ -237,23 +223,6 @@ namespace MordiAudio
             }
             clipsProp.serializedObject.ApplyModifiedProperties();
         }
-
-        #region Utility methods
-
-        string TruncateTrailingNumbers(string str) {
-            bool LastCharacterInStringIsNumber(string str) {
-                string lastChar = str.Substring(str.Length - 1);
-                return int.TryParse(lastChar, out _);
-            }
-
-            while (LastCharacterInStringIsNumber(str)) {
-                str = str.Substring(0, str.Length - 1);
-            }
-
-            return str.Trim(); // Trim whitespace
-        }
-
-        #endregion
     }
 }
 

@@ -191,7 +191,7 @@ namespace MordiAudio
 			AudioEvent audioEvent = (AudioEvent)target;
 			if (audioEvent.sounds != null) {
 				for (int i = 0; i < audioEvent.sounds.Count; i++) {
-					AudioSource source = EditorUtility.CreateGameObjectWithHideFlags("Audio preview", HideFlags.HideAndDontSave, typeof(AudioSource)).GetComponent<AudioSource>();
+                    AudioSource source = UnityEditor.EditorUtility.CreateGameObjectWithHideFlags("Audio preview", HideFlags.HideAndDontSave, typeof(AudioSource)).GetComponent<AudioSource>();
 					auditioningAudioSources.Add(source);
 				}
 			}
@@ -912,9 +912,9 @@ namespace MordiAudio
 		}
 
 		void FetchClips(SerializedProperty clipsProp, string search) {
-			string[] assetGUIDs = AssetDatabase.FindAssets($"t:AudioClip {search}");
+			AudioClip[] clips = Utility.Editor.FindAndLoadAssets<AudioClip>(search);
 
-			if (assetGUIDs.Length == 0) {
+			if (clips.Length == 0) {
 				Debug.Log("No matching clips found.");
 				return;
 			}
@@ -923,14 +923,10 @@ namespace MordiAudio
 			if (clipsProp != null)
 				clipsProp.ClearArray();
 
-			for (int i = 0; i < assetGUIDs.Length; i++) {
-				string path = AssetDatabase.GUIDToAssetPath(assetGUIDs[i]);
-
-				// Add clip to clips-list
-				AudioClip clip = AssetDatabase.LoadAssetAtPath<AudioClip>(path);
+			for (int i = 0; i < clips.Length; i++) {
 				clipsProp.InsertArrayElementAtIndex(i);
-				clipsProp.GetArrayElementAtIndex(i).objectReferenceValue = clip;
-            }
+				clipsProp.GetArrayElementAtIndex(i).objectReferenceValue = clips[i];
+			}
         }
 
         #region Utility methods
