@@ -17,6 +17,7 @@ namespace MordiAudio
 
 		int clipCollectionQueuedForDeletionIndex = -1;
 		int spatialCurveSelected = -1;
+		bool auditionAudioSourcesNeedUpdate;
 
 		/// <summary>
 		/// Each axis ranges from -1 to 1.
@@ -316,6 +317,9 @@ namespace MordiAudio
 				soundsProp = serializedObject.FindProperty("sounds");
 				SerializedProperty soundProp = soundsProp.GetArrayElementAtIndex(index);
 				soundProp.FindPropertyRelative("clips").ClearArray();
+				soundProp.FindPropertyRelative("clipIndex").intValue = 0;
+				soundProp.FindPropertyRelative("chanceToPlay").floatValue = 1f;
+				auditionAudioSourcesNeedUpdate = true;
 			}
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
@@ -331,7 +335,7 @@ namespace MordiAudio
 			if (clipCollectionQueuedForDeletionIndex > -1) {
 				soundsProp.DeleteArrayElementAtIndex(clipCollectionQueuedForDeletionIndex);
 				clipCollectionQueuedForDeletionIndex = -1;
-				UpdateAuditioningAudioSources();
+				auditionAudioSourcesNeedUpdate = false;
             }
 
 			// Apply any modified properties
@@ -339,6 +343,11 @@ namespace MordiAudio
 
 			if (AnyAuditionSourceIsPlaying())
 				Repaint();
+
+			if (auditionAudioSourcesNeedUpdate) {
+				UpdateAuditioningAudioSources();
+				auditionAudioSourcesNeedUpdate = false;
+			}
 		}
 
 		#region Inspector GUI methods

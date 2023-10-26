@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0746107431e01f54faed63c32e49714b, type: 3}
-  m_Name: Enemy - Voice Grunt
+  m_Name: Enemy - Voice - Aggro
   m_EditorClassIdentifier: 
   volume:
-    min: 1
-    max: 1
+    min: 0.8
+    max: 0.85
   pan:
     min: 0
     max: 0
@@ -142,13 +142,14 @@ MonoBehaviour:
   sounds:
   - playTime: 0
     loop: 0
-    chanceToPlay: 1
+    chanceToPlay: 0.25
     clips:
-    - {fileID: 8300000, guid: 2eeca09232397b3459bcf2c772e0e7d2, type: 3}
-    - {fileID: 8300000, guid: e8d58f452c1f10b4992e8d83c25379fa, type: 3}
-    - {fileID: 8300000, guid: 1c0fb7de43ccd3a40a67104601d1b975, type: 3}
-    - {fileID: 8300000, guid: fdc06e8e42cbd794c8ac45628695742d, type: 3}
-    - {fileID: 8300000, guid: 1feafddd1a9551548a39e02543385d61, type: 3}
-    - {fileID: 8300000, guid: 33f0fa3df4bd6144b8ecccab06146d59, type: 3}
-    clipIndex: 3
-    lastPlayedIndex: 0
+    - {fileID: 8300000, guid: f770326620f4248bcbb94e6410ed287e, type: 3}
+    - {fileID: 8300000, guid: 29f930bd68e614aa48c4dfd32dbe908f, type: 3}
+    - {fileID: 8300000, guid: bc424c28bee85479b84482fe354d5b4a, type: 3}
+    - {fileID: 8300000, guid: 4e9726bb8ea6c4d4cbcb91582abb0457, type: 3}
+    - {fileID: 8300000, guid: 55426cfb84abc4ddf804b376952172ab, type: 3}
+    - {fileID: 8300000, guid: fa3fed5413037439ca3ebd931f1edf35, type: 3}
+    - {fileID: 8300000, guid: fa2d3b224a8e442909651dd851f40630, type: 3}
+    clipIndex: 2
+    indexHistory: 0500000000000000ffffffffffffffff
